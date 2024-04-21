@@ -9,7 +9,7 @@ export default function App() {
   const [posts, setPosts] = useState([]);
   const [post, setPost] = useState(null); // post I am editing
   const [error, setError] = useState(null);
-// to add a post 
+  // to add a post
   const handleAddPost = async (newPost) => {
     try {
       const id = posts.length ? Number(posts[posts.length - 1].id) + 1 : 1;
@@ -20,35 +20,25 @@ export default function App() {
       const response = await api.post("/posts", nextPost);
       setPosts([...posts, response.data]);
     } catch (err) {
-      if (err.response) {
-        setError(`Status:${err.response.status} Message:${err.response.data}`);
-      } else {
-        setError(err.message);
-      }
+      setError(err.message);
     }
   };
-// to delete a post 
+  // to delete a post
   const handleDeletePost = async (postId) => {
     if (confirm("Are you sure you want to delete the post?")) {
       try {
         const response = await api.delete(`/posts/${postId}`);
-        
+
         const newPosts = posts.filter((post) => post.id !== response?.data?.id);
         setPosts(newPosts);
       } catch (err) {
-        if (err.response) {
-          setError(
-            `Status:${err.response.status} Message:${err.response.data}`
-          );
-        } else {
-          setError(err.message);
-        }
+        setError(err.message);
       }
     } else {
       console("You chose not to delete the post!");
     }
   };
-// to edit a post 
+  // to edit a post
   const handleEditPost = async (updatedPost) => {
     try {
       const response = await api.patch(`/posts/${updatedPost.id}`, updatedPost);
@@ -58,28 +48,18 @@ export default function App() {
       setPosts(updatedPosts);
       setPost(null);
     } catch (err) {
-      if (err.response) {
-        setError(`Status:${err.response.status} Message:${err.response.data}`);
-      } else {
-        setError(err.message);
-      }
+      setError(err.message);
     }
   };
 
-// load posts in first rendering 
+  // load posts in first rendering
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await api.get("/posts");
         setPosts(response.data);
       } catch (err) {
-        if (err.response) {
-          setError(
-            `Status: ${err.response.status} Message: ${err.response.data}`
-          );
-        } else {
-          setError(err.message);
-        }
+        setError(err.message);
       }
     };
     fetchPosts();
